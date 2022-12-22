@@ -11,11 +11,11 @@ int main()
 {
     printf("Elevator simulator!\n");
 
-    const int NUM_OF_FLOORS = 6;
-    char all_floors[NUM_OF_FLOORS][3] = {{"P"},{"1"},{"2"},{"3"},{"4"},{"5"}};
+    const int NUM_OF_FLOORS = 9;
+    char all_floors[NUM_OF_FLOORS][3] = {{"B3"},{"B2"},{"B1"},{"P"},{"1"},{"2"},{"3"},{"4"},{"5"}};
 
     char target_floor[3];
-    int current_floor = 0;
+    int current_floor = 3;
     while (true)
     {
         getDesiredFloor(&current_floor, NUM_OF_FLOORS, all_floors, target_floor);
@@ -46,6 +46,11 @@ void getDesiredFloor(int* current_floor, const int NUM_OF_FLOORS, char all_floor
         (
             strcmp("1", target_floor) > 0 ||
             strcmp("5", target_floor) < 0
+        )
+        &&
+        (
+            strcmp("B1", target_floor) > 0 ||
+            strcmp("B3", target_floor) < 0
         )
     );
 }
@@ -113,7 +118,7 @@ void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[N
         }
 
         char stop;
-        printf("Do you want to stop at %i. floor? y/n\n", *current_floor);
+        printf("Do you want to stop at floor %s? y/n\n", all_floors[*current_floor]);
         scanf(" %c", &stop);
         fflush(stdin);
         if (stop == 'y')
