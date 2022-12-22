@@ -79,7 +79,7 @@ void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[N
     printf("Your journey to floor %s begins!\n", target_floor);
 
     // find index of desired floor
-    int target_index;
+    int target_index = 0;
     for (int i = 0; i < NUM_OF_FLOORS; i++)
     {
         if (strcmp(target_floor, all_floors[i]) == 0)
@@ -98,6 +98,11 @@ void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[N
     {
         printf("Elevator starts moving down...\n");
         direction = '-';
+    }
+    else
+    {
+        printf("Unexpected error!");
+        return;
     }
 
     while (*current_floor != target_index) {
