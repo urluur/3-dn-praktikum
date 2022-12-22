@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 void printAvailableFloors(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3]);
 void getDesiredFloor(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3], char target_floor[3]);
+void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3], char target_floor[3]);
+
 
 int main()
 {
@@ -13,7 +16,7 @@ int main()
 
     char target_floor[3];
     int current_floor = 0;
-    while (1)
+    while (true)
     {
         getDesiredFloor(&current_floor, NUM_OF_FLOORS, all_floors, target_floor);
         if (target_floor[0] == 'e')
@@ -21,7 +24,7 @@ int main()
             printf("Come again!\n");
             return 0;
         }
-        printf("Your journey to %s begins!\n", target_floor);
+        elevatorRide(&current_floor, NUM_OF_FLOORS, all_floors, target_floor);
 
     }
 }
@@ -59,4 +62,64 @@ void printAvailableFloors(int* current_floor, const int NUM_OF_FLOORS, char all_
         printf("%s ", all_floors[i]);
     }
     printf("\ne - exit\n");
+}
+
+void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3], char target_floor[3]) {
+    if (strcmp(target_floor, all_floors[*current_floor]) == 0)
+    {
+        printf("You are already on your desired floor!\n");
+        return;
+    }
+
+    printf("Your journey to floor %s begins!\n", target_floor);
+
+    // find index of desired floor
+    int target_index;
+    for (int i = 0; i < NUM_OF_FLOORS; i++)
+    {
+        if (strcmp(target_floor, all_floors[i]) == 0)
+        {
+            target_index = i;
+        }
+    }
+
+    char direction;
+    if (target_index > *current_floor)
+    {
+        printf("Elevator starts moving up...\n");
+        direction = '+';
+    }
+    else if (target_index < *current_floor)
+    {
+        printf("Elevator starts moving down...\n");
+        direction = '-';
+    }
+
+    while (*current_floor != target_index) {
+        switch (direction)
+        {
+        case '+':
+            *current_floor += 1;
+            break;
+        
+        case '-':
+            *current_floor -= 1;
+            break;
+        }
+
+        if (*current_floor == target_index)
+        {
+            break;
+        }
+
+        char stop;
+        printf("Do you want to stop at %i. floor? y/n\n", *current_floor);
+        scanf(" %c", &stop);
+        fflush(stdin);
+        if (stop == 'y')
+        {
+            break;
+        }
+    }
+    printf("Doors open. You are at your destination. (floor: %s)\n", all_floors[*current_floor]);
 }
