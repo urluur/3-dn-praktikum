@@ -3,11 +3,13 @@
 #include <string.h>
 
 #define MAX_LEN 11
-#define SECRET "Luknjac"
+#define SECRET "luknjac"
+#define MAX_FAILS 10
 
 void game(void);
 bool checkWin(bool correct[MAX_LEN], int word_len);
-void printGuess(bool corrwct[MAX_LEN], int word_len);
+void printGuess(bool correct[MAX_LEN], int word_len);
+bool checkHit(bool correct[MAX_LEN], int word_len, char guess);
 
 int main()
 {
@@ -50,11 +52,28 @@ void game(void)
         word_len++;
     }
     word_len -= 1; // eos character does not count
+    char guess;
     
-    while (!checkWin(correct, word_len) && fails < 10)
+    while (true)
     {
         printGuess(correct, word_len);
-        break; // prevents infinite loop
+        printf("Guess a letter! ");
+        do {
+            guess = getchar();
+        } while (guess < 'a' || guess > 'z');
+        fails += (checkHit(correct, word_len, guess)) ? 0 : 1;
+        printf("Fails: %i/%i\n", fails, MAX_FAILS);
+        
+        if (checkWin(correct, word_len))
+        {
+            printf("YOU WIN!\n");
+            break;
+        }
+        if (fails >= MAX_FAILS)
+        {
+            printf("YOU LOSE!\n");
+            break;
+        }
     }
     
 }
@@ -82,8 +101,21 @@ void printGuess(bool correct[MAX_LEN], int word_len)
         else
         {
             printf("_ ");
-
         }
     }
     printf("\n");
+}
+
+bool checkHit(bool correct[MAX_LEN], int word_len, char guess)
+{
+    bool hit = false;
+    for (int i = 0; i < word_len; i++)
+    {
+        if (SECRET[i] == guess)
+        {
+            correct[i] = true;
+            hit = true;
+        }
+    }
+    return hit;
 }
