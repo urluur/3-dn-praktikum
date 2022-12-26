@@ -1,18 +1,22 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
+#include <time.h>
 
-#define MAX_LEN 11
-#define SECRET "luknjac"
+#define MAX_LEN 26
 #define MAX_FAILS 10
 
 void game(void);
 bool checkWin(bool correct[MAX_LEN], int word_len);
-void printGuess(bool correct[MAX_LEN], int word_len);
-bool checkHit(bool correct[MAX_LEN], int word_len, char guess);
+void printGuess(bool correct[MAX_LEN], int word_len, char secret[MAX_LEN]);
+bool checkHit(bool correct[MAX_LEN], int word_len, char guess, char secret[MAX_LEN]);
+void getSecret(char secret[MAX_LEN]);
+void drawFigure(int fails);
 
 int main()
 {
+    srand((uint32_t)time(NULL));
     bool exit = false;
     char menu_choice;
     
@@ -43,26 +47,27 @@ int main()
 
 void game(void)
 {
+    char secret[MAX_LEN];
+    getSecret(secret);
     int fails = 0;
     bool correct[MAX_LEN];
     int word_len = 0;
-    for (int i = 0; i < sizeof(SECRET); i++)
+    for (int i = 0; secret[i] != '\0'; i++)
     {
         correct[i] = false;
         word_len++;
     }
-    word_len -= 1; // eos character does not count
     char guess;
     
     while (true)
     {
-        printGuess(correct, word_len);
+        printGuess(correct, word_len, secret);
         printf("Guess a letter! ");
         do {
             guess = getchar();
         } while (guess < 'a' || guess > 'z');
-        fails += (checkHit(correct, word_len, guess)) ? 0 : 1;
-        printf("Fails: %i/%i\n", fails, MAX_FAILS);
+        fails += (checkHit(correct, word_len, guess, secret)) ? 0 : 1;
+        drawFigure(fails);
         
         if (checkWin(correct, word_len))
         {
@@ -74,6 +79,7 @@ void game(void)
             printf("YOU LOSE!\n");
             break;
         }
+        printf("\n");
     }
     
 }
@@ -90,13 +96,13 @@ bool checkWin(bool correct[MAX_LEN], int word_len)
     return true;
 }
 
-void printGuess(bool correct[MAX_LEN], int word_len)
+void printGuess(bool correct[MAX_LEN], int word_len, char secret[MAX_LEN])
 {
     for (int i = 0; i < word_len; i++)
     {
         if (correct[i])
         {
-            printf("%c ", SECRET[i]);
+            printf("%c ", secret[i]);
         }
         else
         {
@@ -106,16 +112,53 @@ void printGuess(bool correct[MAX_LEN], int word_len)
     printf("\n");
 }
 
-bool checkHit(bool correct[MAX_LEN], int word_len, char guess)
+bool checkHit(bool correct[MAX_LEN], int word_len, char guess, char secret[MAX_LEN])
 {
     bool hit = false;
     for (int i = 0; i < word_len; i++)
     {
-        if (SECRET[i] == guess)
+        if (secret[i] == guess)
         {
             correct[i] = true;
             hit = true;
         }
     }
     return hit;
+}
+
+void getSecret(char secret[MAX_LEN])
+{
+    const int num_of_secrets = 10;
+    char secrets[num_of_secrets][MAX_LEN] =
+    {
+        {"luka"},
+        {"programiranje"},
+        {"praktikum"},
+        {"bozic"},
+        {"pocitnice"},
+        {"dvatisoctriindvajset"},
+        {"novoleto"},
+        {"veselepraznike"},
+        {"vislice"},
+        {"skrivnost"}
+    };
+    int lucky = rand() % num_of_secrets;
+    strcpy(secret, secrets[lucky]);
+}
+
+void drawFigure(int fails)
+{
+    char filename[7];
+    sprintf(filename, "%i.txt", fails);
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        printf("Can't open file: %s!\n", filename);
+        return;
+    }
+    char line[30];
+    while(fgets(line, sizeof(line), file) != NULL) {
+        printf("%s", line);
+    }
+    printf("\n");
+    fclose(file);
 }
