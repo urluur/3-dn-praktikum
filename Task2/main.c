@@ -21,8 +21,13 @@ int main()
     char menu_choice;
     
     do { // main menu
-        do {
-            printf("--- Hangman ---\n's' - start\n'e' - exit\n");
+        do { // waiting correct input
+            printf("\n==== Hangman ====\n");
+            printf("= 's' - start   =\n");
+            printf("= 'e' - exit    =\n");
+            printf("=================\n\n");
+            
+            printf("Choice: ");
             scanf(" %c", &menu_choice);
             fflush(stdin);
         } while (menu_choice != 's' && menu_choice != 'e');
@@ -30,6 +35,7 @@ int main()
         switch (menu_choice)
         {
             case 's':
+                printf("Press ctrl-c midgame to force exit.\n\n");
                 game();
                 break;
             case 'e':
@@ -40,7 +46,7 @@ int main()
         
     } while (!exit);
     
-    printf("Goodbye!\n");
+    printf("Goodbye!\n\n");
     
     return 0;
 }
@@ -52,14 +58,14 @@ void game(void)
     int fails = 0;
     bool correct[MAX_LEN];
     int word_len = 0;
-    for (int i = 0; secret[i] != '\0'; i++)
+    for (int i = 0; secret[i] != '\0'; i++) // creates a bool array for correct guesses
     {
         correct[i] = false;
         word_len++;
     }
     char guess;
     
-    while (true)
+    while (true) // main game loop
     {
         printGuess(correct, word_len, secret);
         printf("Guess a letter! ");
@@ -67,16 +73,21 @@ void game(void)
             guess = getchar();
         } while (guess < 'a' || guess > 'z');
         fails += (checkHit(correct, word_len, guess, secret)) ? 0 : 1;
+        printf("----------------------------------------\n");
         drawFigure(fails);
         
         if (checkWin(correct, word_len))
         {
-            printf("YOU WIN!\n");
+            printf("\n==============\n");
+            printf("=  YOU WIN!  =\n");
+            printf("==============\n\n");
             break;
         }
         if (fails >= MAX_FAILS)
         {
-            printf("YOU LOSE!\n");
+            printf("\n===============\n");
+            printf("=  YOU LOSE!  =\n");
+            printf("===============\n\n");
             break;
         }
         printf("\n");
@@ -156,7 +167,7 @@ void drawFigure(int fails)
         return;
     }
     char line[30];
-    while(fgets(line, sizeof(line), file) != NULL) {
+    while(fgets(line, sizeof(line), file) != NULL) { // reads ascii stickman from file
         printf("%s", line);
     }
     printf("\n");
