@@ -1,18 +1,22 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <time.h>
 
 void printAvailableFloors(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3]);
 void getDesiredFloor(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3], char target_floor[3]);
-void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3], char target_floor[3]);
-
+void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3], char target_floor[3], int* num_passengers);
+bool getRandomBool();
 
 int main()
 {
     printf("Elevator simulator!\n");
+    srand(time(NULL));
 
     const int NUM_OF_FLOORS = 9;
     char all_floors[NUM_OF_FLOORS][3] = {{"B3"},{"B2"},{"B1"},{"P"},{"1"},{"2"},{"3"},{"4"},{"5"}};
+    int passengers = 1;
 
     char target_floor[3];
     int current_floor = 3;
@@ -24,8 +28,7 @@ int main()
             printf("Come again!\n");
             return 0;
         }
-        elevatorRide(&current_floor, NUM_OF_FLOORS, all_floors, target_floor);
-
+        elevatorRide(&current_floor, NUM_OF_FLOORS, all_floors, target_floor, &passengers);
     }
 }
 
@@ -69,7 +72,7 @@ void printAvailableFloors(int* current_floor, const int NUM_OF_FLOORS, char all_
     printf("\ne - exit\n");
 }
 
-void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3], char target_floor[3]) {
+void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[NUM_OF_FLOORS][3], char target_floor[3], int* num_passengers) {
     if (strcmp(target_floor, all_floors[*current_floor]) == 0)
     {
         printf("You are already on your desired floor!\n");
@@ -99,7 +102,7 @@ void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[N
         printf("Elevator starts moving down...\n");
         direction = '-';
     }
-    else
+    else // isn't necessary, gets rid of one xcode generated warning
     {
         printf("Unexpected error!");
         return;
@@ -111,7 +114,6 @@ void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[N
         case '+':
             *current_floor += 1;
             break;
-        
         case '-':
             *current_floor -= 1;
             break;
@@ -132,4 +134,8 @@ void elevatorRide(int* current_floor, const int NUM_OF_FLOORS, char all_floors[N
         }
     }
     printf("Doors open. You are at your destination. (floor: %s)\n", all_floors[*current_floor]);
+}
+
+bool getRandomBool(){
+    return (rand() % 2) > 0;
 }
