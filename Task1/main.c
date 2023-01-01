@@ -15,7 +15,7 @@ int main()
     srand(time(NULL));
 
     const int NUM_OF_FLOORS = 9;
-    char all_floors[NUM_OF_FLOORS][3] = {{"B3"},{"B2"},{"B1"},{"P"},{"1"},{"2"},{"3"},{"4"},{"5"}};
+    char all_floors[][3] = {{"B3"},{"B2"},{"B1"},{"P"},{"1"},{"2"},{"3"},{"4"},{"5"}};
     int passengers = 1;
 
     char target_floor[3];

@@ -16,7 +16,7 @@ void drawFigure(int fails);
 
 int main()
 {
-    srand((uint32_t)time(NULL));
+    srand(time(NULL));
     bool exit = false;
     char menu_choice;
     
@@ -140,7 +140,7 @@ bool checkHit(bool correct[MAX_LEN], int word_len, char guess, char secret[MAX_L
 void getSecret(char secret[MAX_LEN])
 {
     const int num_of_secrets = 10;
-    char secrets[num_of_secrets][MAX_LEN] =
+    char secrets[][MAX_LEN] =
     {
         {"luka"},
         {"programiranje"},
