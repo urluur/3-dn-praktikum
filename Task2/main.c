@@ -13,6 +13,8 @@ void printGuess(bool correct[MAX_LEN], int word_len, char secret[MAX_LEN]);
 bool checkHit(bool correct[MAX_LEN], int word_len, char guess, char secret[MAX_LEN]);
 void getSecret(char secret[MAX_LEN]);
 void drawFigure(int fails);
+void printAllGuesses(char allGuesses[30]);
+void addGuess(char allGuesses[30], char *guess);
 
 int main()
 {
@@ -64,6 +66,7 @@ void game(void)
         word_len++;
     }
     char guess;
+    char allGuesses[30] = "\0";
     
     while (true) // main game loop
     {
@@ -72,8 +75,11 @@ void game(void)
         do {
             guess = getchar();
         } while (guess < 'a' || guess > 'z');
+        
         fails += (checkHit(correct, word_len, guess, secret)) ? 0 : 1;
         printf("----------------------------------------\n");
+        addGuess(allGuesses, &guess);
+        printAllGuesses(allGuesses);
         drawFigure(fails);
         
         if (checkWin(correct, word_len))
@@ -172,4 +178,31 @@ void drawFigure(int fails)
     }
     printf("\n");
     fclose(file);
+}
+
+void printAllGuesses(char allGuesses[30])
+{
+    printf("Previous tries: ");
+    for (int i = 0; allGuesses[i] != '\0'; i++)
+    {
+        printf("%c ", allGuesses[i]);
+    }
+    printf("\n");    
+}
+
+void addGuess(char allGuesses[30], char *guess)
+{
+    for (int i = 0; ; i++)
+    {
+        if(allGuesses[i] == *guess)
+        {
+            break;
+        }
+        if(allGuesses[i] == '\0')
+        {
+            allGuesses[i] = *guess;
+            allGuesses[i + 1] = '\0';
+            break;
+        }
+    }
 }
