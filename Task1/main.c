@@ -12,6 +12,11 @@ void getDesiredFloor(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char
 void elevatorRide(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char target_floor[3], int* num_passengers);
 bool getRandomBool();
 
+/**
+ * Main menu for the simulator
+ * Waits for user to input one available floor
+ * or 'e' to exit the program.
+*/
 int main()
 {
     printf("Elevator simulator!\n");
@@ -21,8 +26,8 @@ int main()
     int passengers = 1;
 
     char target_floor[3];
-    int current_floor = 3;
-    while (true)
+    int current_floor = 3; // "P" in all_floors array
+    while (true) // Gets desired floor until user wants to exit
     {
         getDesiredFloor(&current_floor, all_floors, target_floor);
         if (target_floor[0] == 'e')
@@ -30,10 +35,13 @@ int main()
             printf("Come again!\n");
             return 0;
         }
-        elevatorRide(&current_floor, all_floors, target_floor, &passengers);
+        elevatorRide(&current_floor, all_floors, target_floor, &passengers); 
     }
 }
 
+/**
+ * Gets a floor number user want to go to
+*/
 void getDesiredFloor(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char target_floor[3]){
     do
     {    
@@ -41,7 +49,7 @@ void getDesiredFloor(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char
         printf("Enter desired floor number: ");
         scanf("%s", target_floor);
 
-    } while 
+    } while // Asks for input until it's a valid floor number
     (
         (
             strcmp("e", target_floor) != 0 &&
@@ -60,6 +68,9 @@ void getDesiredFloor(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char
     );
 }
 
+/**
+ * Prints all floors except the current floor
+*/
 void printAvailableFloors(int* current_floor, char all_floors[NUM_OF_FLOORS][3]) {
     
     printf("Available floors: ");
@@ -74,6 +85,12 @@ void printAvailableFloors(int* current_floor, char all_floors[NUM_OF_FLOORS][3])
     printf("\ne - exit\n");
 }
 
+/**
+ * Moves the elevator towards target floor
+ * User can decide to get out early
+ * Random passengers can join or leave the elevator
+ * Maximum number of passengers is MAX_PASSENGERS
+*/
 void elevatorRide(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char target_floor[3], int* num_passengers) {
     if (strcmp(target_floor, all_floors[*current_floor]) == 0)
     {
@@ -83,7 +100,7 @@ void elevatorRide(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char ta
 
     printf("Your journey to floor %s begins!\n", target_floor);
 
-    // find index of desired floor
+    // Find index of desired floor
     int target_index = 0;
     for (int i = 0; i < NUM_OF_FLOORS; i++)
     {
@@ -104,13 +121,15 @@ void elevatorRide(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char ta
         printf("Elevator starts moving down...\n");
         direction = '-';
     }
-    else // isn't necessary, gets rid of one xcode generated warning
+    else // Isn't necessary, gets rid of one xcode generated warning
     {
         printf("Unexpected error!");
         return;
     }
 
     while (*current_floor != target_index) {
+        printf("---------------\n");
+
         switch (direction)
         {
         case '+':
@@ -121,19 +140,20 @@ void elevatorRide(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char ta
             break;
         }
 
+        // User arrived to their destination
         if (*current_floor == target_index)
         {
             break;
         }
 
-        // chance of someone leaving the elevator
+        // Chance of someone leaving the elevator
         if (getRandomBool() && *num_passengers > 1)
         {
             printf("A passenger riding with you leaves the elevator on the %s. floor.\n", all_floors[*current_floor]);
             *num_passengers -= 1;
         }
 
-        // chance of someone getting on the elevator
+        // Chance of someone getting on the elevator
         if (getRandomBool() && *num_passengers < MAX_PASSENGERS)
         {
             printf("New passenger from the %s. floor gets on the elevator.\n", all_floors[*current_floor]);
@@ -149,6 +169,11 @@ void elevatorRide(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char ta
             printf("There are %i passengers on the elevator.\n", *num_passengers);
         }
 
+        /**
+         * Asks user if they want to leave
+         * Press key 'y' to stop
+         * Press any other character to continue the ride
+         * */
         char stop;
         printf("Do you want to stop at floor %s? y/n\n", all_floors[*current_floor]);
         scanf(" %c", &stop);
@@ -161,6 +186,9 @@ void elevatorRide(int* current_floor, char all_floors[NUM_OF_FLOORS][3], char ta
     printf("Doors open. You are at your destination. (floor: %s)\n", all_floors[*current_floor]);
 }
 
+/**
+ * Returns random true or false
+*/
 bool getRandomBool(){
     return (rand() % 2) > 0;
 }
